@@ -1,0 +1,83 @@
+<html>
+	<head>
+		<script src="FN_Deferred.min.js"></script>
+		<script>
+			/*
+				How ever you prefer to get your deferred objects Callbacks we can do them all.
+				
+				- You can pass the callbacks in.
+				var deferred = new Deferred(doneCallback, failCallback);
+				
+				- You can register them like jquery
+				deferred.done(doneCallback).fail(failCallback).always(alwaysCallback);
+
+				- You can register them like traditional Promise A
+				deferred.then(doneCallback, failCallback);
+
+				- You can register them like window.Promise
+				deferred.then(doneCallback).catch(failCallback);				
+
+			*/
+
+			// Success Test Functions
+			var successFun1 = function(result1, result2, result3)
+			{
+				console.log("Resolving successFun1: "+JSON.stringify(arguments));
+			};
+
+			var successFun2 = function(result1, result2, result3)
+			{
+				console.log("Resolving successFun2: "+JSON.stringify(arguments));
+			};
+
+			var successFun3 = function(result1, result2, result3)
+			{
+				console.log("Resolving successFun3: "+JSON.stringify(arguments));
+			};
+
+
+			// Fail Test Functions
+			var failFun1 = function(errorObj)
+			{
+				console.log("Rejecting failFun1: "+JSON.stringify(arguments));
+			};
+
+			var failFun2 = function(errorObj)
+			{
+				console.log("Rejecting failFun2: "+JSON.stringify(arguments));
+			};
+			var failFun3 = function(errorObj)
+			{
+				console.log("Rejecting failFun3: "+JSON.stringify(arguments));
+			};
+			var failFun4 = function(errorObj)
+			{
+				console.log("Rejecting failFun4: "+JSON.stringify(arguments));
+			};
+
+			// Always Function
+			var alwaysFun1 = function(result)
+			{
+				console.log("Rejecting alwaysFun1: "+JSON.stringify(arguments));
+			};
+
+			// Bad function that will throw an error, give it a try.
+			var badFunction = function(result, result2, result3)
+			{
+				var stuff = finction()
+				{
+
+				};
+			};
+
+			// Which ever way you prefer your callback, You can do it.
+			var deferred = new Deferred(successFun1, failFun1).done(successFun2).fail(failFun2).then(successFun3, failFun3).catch(failFun4).always(alwaysFun1);
+
+			window.setTimeout(function()
+			{
+				deferred.resolve(10, 30, 20);
+				// deferred.reject({errorType: "SomethingBadHappened"}, "This is an Error");
+			}, 1000);
+		</script>
+	</head>
+</html>
