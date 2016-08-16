@@ -1,5 +1,7 @@
 # fn_deferred
 
+Fractured Nations Deferred is a deferred object library I developed with mobile games in mind. It is very light, compadible and easy to use.
+
 Purpose:
 	This library is to give Promise A Object support.  If your site needs to support promises but also needs to support IE, so you can not use window.Promise.  Jquery is nice, but it is heavy.  FN_Deferred weighs in about 3kb.  FN_Deferred is a great stable micro library. Give it a whirl.  
 
