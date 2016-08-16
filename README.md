@@ -52,8 +52,7 @@ Get the value of a resolved or rejected Deferred
 	var value = deferred.value;
 
 
-Can easily replace Jquery Deferred
-	Supports promise method.
+Can easily replace Jquery! FN_Deferred Supports promise method.
 
 	var deferred = new Deferred();
 	return deferred.promise(); 
