@@ -49,7 +49,7 @@
 	}
 
 
-	var Deferred = function(resolvedCallBack, rejectedCallBack, timeout, id)
+		var Deferred = function(resolvedCallBack, rejectedCallBack, timeout, id)
 	{
 		var self = this;
 		this.id = id || null;
@@ -124,7 +124,8 @@
 			if ( typeof arg == "function" ) {
 				if(self.state !== Deferred.state.PENDING)
 				{
-					delay(arg(self.value, self.isResolved()));
+					// delay(arg(self.value, self.isResolved()));
+					delay(arg.apply(this, self.value));
 				}
 				onAlways.push( arg );
 			}
@@ -142,7 +143,7 @@
 			if ( typeof arg == "function" ) {
 				if(self.state === Deferred.state.SUCCESS)
 				{
-					delay(arg(self.value, true));
+					delay(arg.apply(this, self.value));
 				}
 				onDone.push( arg );
 			}
@@ -174,7 +175,8 @@
 			if ( typeof arg == "function" ) {
 				if(self.state === Deferred.state.FAILURE)
 				{
-					delay(arg(self.value, false));
+					// delay(arg(self.value, false));
+					delay(arg.apply(this, self.value));
 				}
 				onFail.push( arg );
 			}
@@ -224,19 +226,23 @@
 
 		var retryProcess = true;
 		var process = function(arg) {
-			var success, value;
-			var that = this;
 			if ( self.state === Deferred.state.PENDING ) {
 				return self;
 			}
 
 			self.value = arguments;
 
-			var mapped = function(val)
+			var mapped = function(arr, context, args)
 			{
+				var i=0;
 				try 
 				{
-					val.apply(that, self.value);
+					var len = arr.length;
+					for(i=0;i<len;i++)
+					{
+						arr[i].apply(context, args);
+					}
+					// val.apply(that, self.value);
 				}
 				catch(e)
 				{
@@ -246,19 +252,19 @@
 					{
 						retryProcess = false;
 						self.state = Deferred.state.FAILURE;
-						process({errorType: "deferred_callback_error", error: e, message: "An Error occured in this function: "+val.toString()});
+						process({errorType: "deferred_callback_error", error: e, message: "An Error occured in this function: "+arr[i].toString()});
 					}
 				}
 			};
 			if(self.state === Deferred.state.SUCCESS)
 			{
-				onDone.map(mapped);
+				mapped(onDone, this, arguments);
 			}
 			else if(self.state === Deferred.state.FAILURE)
 			{
-				onFail.map(mapped);
+				mapped(onFail, this, arguments);
 			}
-			onAlways.map(mapped);
+			mapped(onAlways, this, arguments);
 			return self;
 		};
 
@@ -332,42 +338,35 @@
 			each( args, function ( p ) {
 				p.then( function () {
 					if ( ++i === nth && !defer.isResolved() ) {
-						if ( args.length > 1 ) {
-							defer.resolve( args.map( function ( obj ) {
-								return obj.value;
-							} ) );
+						// if ( args.length > 1 ) {
+							defer.resolve.apply(this, args);
 							if ( callback ) {
-							callback(args.map( function ( obj ) {
-									return obj.value;
-								} ));
+								callback.apply(this, args);
 							}
-							
-						}
-						else {
-							defer.resolve( args[0].value );
-							if ( callback ) {
-							callback( args[0].value );
-							}
-						}
+						// }
+						// else {
+						// 	defer.resolve.apply(this, args);
+						// 	// defer.resolve( args[0].value );
+
+						// 	if ( callback ) {
+						// 		callback.apply(this, args);
+						// 	}
+						// }
 					}
 				}, function () {
 					if ( !defer.isResolved() ) {
-						if ( args.length > 1 ) {
-							defer.reject( args.map( function ( obj ) {
-								return obj.value;
-							} ) );
+						// if ( args.length > 1 ) {
+							defer.reject.apply(this, args);
 							if ( callback ) {
-							callback(args.map( function ( obj ) {
-									return obj.value;
-								} ));
+								callback.apply(this, args);
 							}
-						}
-						else {
-							defer.reject( args[0].value );
-							if ( callback ) {
-							callback( args[0].value );
-							}
-						}
+						// }
+						// else {
+						// 	defer.reject.apply(this, args);
+						// 	if ( callback ) {
+						// 		callback.apply(this, args)
+						// 	}
+						// }
 					}
 				} );
 			} );
