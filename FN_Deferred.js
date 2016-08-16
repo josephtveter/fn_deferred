@@ -242,7 +242,6 @@
 					{
 						arr[i].apply(context, args);
 					}
-					// val.apply(that, self.value);
 				}
 				catch(e)
 				{
@@ -338,35 +337,17 @@
 			each( args, function ( p ) {
 				p.then( function () {
 					if ( ++i === nth && !defer.isResolved() ) {
-						// if ( args.length > 1 ) {
-							defer.resolve.apply(this, args);
-							if ( callback ) {
-								callback.apply(this, args);
-							}
-						// }
-						// else {
-						// 	defer.resolve.apply(this, args);
-						// 	// defer.resolve( args[0].value );
-
-						// 	if ( callback ) {
-						// 		callback.apply(this, args);
-						// 	}
-						// }
+						defer.resolve.apply(this, args);
+						if ( callback ) {
+							callback.apply(this, args);
+						}
 					}
 				}, function () {
 					if ( !defer.isResolved() ) {
-						// if ( args.length > 1 ) {
-							defer.reject.apply(this, args);
-							if ( callback ) {
-								callback.apply(this, args);
-							}
-						// }
-						// else {
-						// 	defer.reject.apply(this, args);
-						// 	if ( callback ) {
-						// 		callback.apply(this, args)
-						// 	}
-						// }
+						defer.reject.apply(this, args);
+						if ( callback ) {
+							callback.apply(this, args);
+						}
 					}
 				} );
 			} );
